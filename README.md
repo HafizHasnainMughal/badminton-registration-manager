@@ -199,5 +199,5 @@ The purpose of this project is to make badminton tournament registration and par
 
 ## 👨‍💻 Author
 
-**Hasnain Mughal**
+**Hafiz Hasnain Mughal**
 
