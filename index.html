@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Badminton Sports Event Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        [data-page] {
+            display: none;
+        }
+
+        [data-page].active {
+            display: block;
+        }
+
+        #modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+        }
+
+        #modal-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            width: 95%;
+            max-width: 900px;
+        }
+
+        #banner-container {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 60;
+            width: 90%;
+            max-width: 500px;
+            pointer-events: none;
+        }
+
+        .banner {
+            animation: slideIn .29s ease-out forwards, slideOut .29s ease-in 3.7s forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0)
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-20px)
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white-100 min-h-screen antialiased">
+    <div class="container mx-auto p-4 min-h-screen flex flex-col items-center justify-center">
+        <div id="welcome-banner"
+            class="w-full max-w-4xl p-6 rounded-2xl shadow-2xl bg-gradient-to-r from-slate-800 via-indigo-900 to-slate-800 mb-6 text-center border border-indigo-700/30">
+            <h1 class="text-4xl font-extrabold text-white">Welcome!</h1>
+            <p class="mt-2 text-lg text-indigo-200">Badminton Sports Event Registration</p>
+        </div>
+
+        <div id="start-page" data-page
+            class="active w-full max-w-4xl p-6 bg-slate-800 rounded-2xl shadow-lg border border-indigo-700/30">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button data-nav="#player-login-page"
+                    class="w-full sm:w-1/2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-lg text-xl">Player</button>
+                <button data-nav="#management-login-page"
+                    class="w-full sm:w-1/2 bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-lg text-xl">Management</button>
+            </div>
+            <div id="developer-label" class="mt-4 text-center text-sm text-white">
+                <br><br>
+                player lives 4ever
+            </div>
+        </div>
+
+
+        <div id="player-login-page" data-page class="w-full max-w-md p-8 bg-slate-800 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold text-center text-indigo-300 mb-6">Player Portal</h2>
+            <div class="mb-6">
+                <label for="ag-login" class="block text-sm font-medium text-gray-300 mb-1">Returning Player? Enter
+                    AG#</label>
+                <input type="text" id="ag-login" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    placeholder="0000-ag-0000">
+                <button id="player-returning-btn"
+                    class="mt-3 w-full bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded-lg">Find
+                    My
+                    Profile</button>
+            </div>
+
+            <div>
+                <button id="player-new-btn"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Register as
+                    New
+                    Player</button>
+            </div>
+            <button data-nav="#start-page"
+                class="mt-6 w-full text-center text-sm text-slate-400 hover:text-indigo-200 hover:underline">&larr; Back
+                to
+                Home</button>
+        </div>
+
+        <div id="player-form-page" data-page class="w-full max-w-3xl p-8 bg-slate-800 rounded-lg shadow-lg mt-6">
+            <h2 id="player-form-title" class="text-2xl font-bold text-center text-slate-200 mb-6">Player Registration
+            </h2>
+            <form id="player-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm text-slate-200">Full Name</label>
+                        <input type="text" id="form-name" name="name"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">AG Number</label>
+                        <input type="text" id="form-agNumber" name="agNumber"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            placeholder="0000-AG-0000" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Department</label>
+                        <input type="text" id="form-department" name="department"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Gender</label>
+                        <select id="form-gender" name="gender"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-200">Semester</label>
+                        <select id="form-semester" name="semester"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            required>
+                            <option value="">Select Semester</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Phone Number</label>
+                        <input type="text" id="form-phone" name="phone" pattern="^03[0-9]{2}[0-9]{7}$"
+                            placeholder="03XXXXXXXXX"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Category</label>
+                        <select id="form-category" name="category" data-action="toggle-partner"
+                            data-target="#form-partner-wrapper"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            required>
+                            <option value="">Select Category</option>
+                            <option value="singles">Singles</option>
+                            <option value="doubles">Doubles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="form-partner-wrapper" style="display:none;"
+                    class="md:col-span-2 grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                    <div class="md:col-span-4">
+                        <h3 class="text-lg font-semibold text-slate-200 border-b pb-1">Partner Details</h3>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Partner's Name</label>
+                        <input id="form-partnerName" name="partnerName"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Partner's AG#</label>
+                        <input id="form-partnerAgNumber" name="partnerAgNumber"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100"
+                            placeholder="0000-AG-0000">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Partner's Dept</label>
+                        <input id="form-partnerDepartment" name="partnerDepartment"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Partner's Sem</label>
+                        <select id="form-partnerSemester" name="partnerSemester"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100">
+                            <option value="">Select Sem</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-200">Partner's Phone</label>
+                        <input id="form-partnerPhone" name="partnerPhone" pattern="^03[0-9]{2}[0-9]{7}$"
+                            placeholder="03XXXXXXXXX"
+                            class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100">
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <button type="button" data-nav="#player-login-page"
+                        class="text-sm text-slate-400 hover:text-indigo-300 hover:underline">&larr; Back</button>
+                    <button type="submit" id="player-form-submit-btn"
+                        class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-6 rounded-lg">Submit
+                        Registration</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="player-profile-page" data-page class="w-full max-w-2xl p-8 bg-slate-800 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-indigo-300 mb-6">Your Profile Details</h2>
+            <div id="profile-details-container" class="space-y-4">
+                <p class="text-center text-slate-400">Loading your data...</p>
+            </div>
+            <div class="mt-8 flex flex-col sm:flex-row justify-between gap-4">
+                <button id="profile-edit-btn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">Edit My
+                    Profile</button>
+                <button data-nav="#start-page"
+                    class="text-sm text-slate-400 hover:text-indigo-200 hover:underline">&larr; Back
+                    to Home</button>
+            </div>
+        </div>
+
+
+        <div id="management-login-page" data-page class="w-full max-w-sm p-8 bg-slate-800 rounded-2xl shadow-lg mt-6">
+            <h2 class="text-2xl font-bold text-center text-indigo-200 mb-6">Management Login</h2>
+            <div class="mb-4">
+                <label class="block text-sm text-slate-300">Password</label>
+                <input type="password" id="management-password"
+                    class="mt-1 w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-gray-100">
+            </div>
+            <button id="management-login-btn"
+                class="w-full bg-indigo-800 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Login</button>
+            <button data-nav="#start-page"
+                class="mt-6 w-full text-center text-sm text-slate-400 hover:text-indigo-300 hover:underline">&larr; Back
+                to
+                Home</button>
+        </div>
+
+        <div id="management-dashboard-page" data-page class="w-full max-w-7xl p-6 bg-slate-800 rounded-lg shadow-lg">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-3xl font-bold text-indigo-200">Management Dashboard</h2>
+                <button data-nav="#start-page" class="text-sm text-indigo-300 hover:underline">&larr; Logout (Back to
+                    Home)</button>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <div class="flex-grow">
+                    <label for="search-input" class="sr-only">Search</label>
+                    <input type="text" id="search-input" placeholder="Search by Name or AG#"
+                        class="w-full px-4 py-2 border border-indigo-300 rounded-lg">
+                </div>
+                <div id="filter-buttons" class="flex-shrink-0 flex flex-wrap gap-2">
+                    <button data-filter="all"
+                        class="filter-btn bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium">All</button>
+                    <button data-filter="singles"
+                        class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Singles</button>
+                    <button data-filter="doubles"
+                        class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Doubles</button>
+                    <button data-filter="Male"
+                        class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Male</button>
+                    <button data-filter="Female"
+                        class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Female</button>
+                    <button data-filter="paid"
+                        class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Paid</button>
+                    <button data-filter="unpaid"
+                        class="filter-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">Unpaid</button>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <button id="add-player-btn"
+                    class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg">+ Add
+                    Player</button>
+                <button id="export-csv-btn"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg">Export to
+                    CSV</button>
+                <button id="import-csv-btn"
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-lg">Import
+                    CSV</button>
+                <input type="file" id="import-file" accept="text/csv" style="display:none" />
+            </div>
+
+            <div class="overflow-x-auto shadow rounded-lg border border-gray-200">
+                <table class="min-w-full divide-y divide-slate-700">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                No.
+                            </th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Name
+                            </th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                AG#
+                            </th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Gender
+                            </th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Department</th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Semester</th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Phone
+                            </th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Category</th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Partner</th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Fee
+                                Status</th>
+                            <th
+                                class="px-6 py-3 font-bold text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="player-table-body" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center text-gray-500">Loading players...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-backdrop" data-action="close-modal"></div>
+    <div id="modal-container" class="w-11/12 max-w-2xl bg-white rounded-lg shadow-2xl overflow-hidden">
+        <div id="modal-content" class="p-6"></div>
+    </div>
+    <div id="banner-container"></div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        // Firebase config (same as your original)
+        import { firebaseConfig } from './firebase-config.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const playersRef = ref(db, "players");
+
+        // Management password variables - UPDATED FOR FILTERING ON LOGIN
+        const MANAGEMENT_PASSWORD = 'manag123';
+        const MANAGEMENT_PASSWORD_MALE = 'managmale';
+        const MANAGEMENT_PASSWORD_FEMALE = 'managfemale';
+
+        // State Variables
+        let allPlayers = [];
+        let firebaseListenerActive = false;
+        let currentEditingPlayerId = null;
+        let currentFilter = 'all';
+        let currentLoggedInPlayerId = null; // Stores the ID of the *registration entry*
+        let currentLoggedInPlayerRole = null; // Stores 'main' or 'partner' in the selected entry
+        let managementFilter = 'all'; // Filter applied on management login (all, Male, or Female)
+
+        // DOM References
+        const allPages = document.querySelectorAll('[data-page]');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalContainer = document.getElementById('modal-container');
+        const modalContent = document.getElementById('modal-content');
+        const bannerContainer = document.getElementById('banner-container');
+        const playerForm = document.getElementById('player-form');
+        const playerTableBody = document.getElementById('player-table-body');
+        const playerPublicListBody = document.getElementById('player-public-list-body');
+        const searchInput = document.getElementById('search-input');
+        const filterButtons = document.getElementById('filter-buttons');
+        const profileDetailsContainer = document.getElementById('profile-details-container');
+        const profileEditBtn = document.getElementById('profile-edit-btn');
+
+        // Function to switch visible page
+        function showPage(pageId) {
+            allPages.forEach(p => p.classList.remove('active'));
+            const newP = document.querySelector(pageId);
+            if (newP) newP.classList.add('active');
+            if (pageId === '#management-dashboard-page') loadAndListen();
+            if (pageId === '#players-list-page') loadAndListen();
+            if (pageId === '#player-profile-page') renderPlayerProfile();
+            if (pageId === '#start-page') {
+                document.getElementById('ag-login').value = '';
+                currentLoggedInPlayerId = null;
+                currentLoggedInPlayerRole = null; // Reset role on logout
+                managementFilter = 'all'; // Reset login filter on logout
+                currentFilter = 'all'; // Reset dashboard filter on logout
+            }
+        }
+
+        // Function to display a temporary banner message
+        function showBanner(msg, type = 'success') {
+            const banner = document.createElement('div');
+            const bg = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+            banner.className = `banner ${bg} text-white p-4 rounded-lg shadow-md mb-2`;
+            banner.textContent = msg;
+            bannerContainer.appendChild(banner);
+            setTimeout(() => banner.remove(), 4000);
+        }
+
+        // Modal functions
+        function showModal(html) {
+            modalContent.innerHTML = html;
+            modalBackdrop.style.display = 'block';
+            modalContainer.style.display = 'block';
+        }
+        function hideModal() { modalBackdrop.style.display = 'none'; modalContainer.style.display = 'none'; modalContent.innerHTML = ''; }
+
+        // Utility function to escape HTML for security
+        function escapeHtml(s) {
+            if (!s && s !== 0) return '';
+            return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#39;" }[c]; });
+        }
+
+        // Load and listen to Firebase players data
+        function loadAndListen() {
+            if (firebaseListenerActive) return; // Only attach the listener once
+            onValue(playersRef, (snapshot) => {
+                allPlayers = [];
+                // Map data from snapshot to local array
+                snapshot.forEach(child => {
+                    allPlayers.push({ id: child.key, ...child.val() });
+                });
+                renderTable(); // Update management table
+                // renderPlayersList(); // Update public list (if available) - Removed since there is no public list page in this HTML
+                if (document.querySelector('#player-profile-page').classList.contains('active')) renderPlayerProfile(); // Update profile if active
+            }, (err) => { console.error(err); showBanner('Error loading players', 'error'); });
+            firebaseListenerActive = true;
+        }
+
+
+        // Find all entries for an AG number (main or partner)
+        function findAllPlayerEntriesByAG(ag) {
+            if (!ag) return [];
+            const normalizedAg = ag.trim().toUpperCase();
+
+            // An entry is a match if: 1. The player is the Main Player (agNumber) OR 2. The player is the Partner (partnerAgNumber)
+            const matchingEntries = allPlayers.filter(p =>
+                (p.agNumber || '').toUpperCase() === normalizedAg ||
+                (p.partnerAgNumber || '').toUpperCase() === normalizedAg
+            );
+
+            // Group the entries by category to find unique player participations
+            const uniqueCategories = [];
+            matchingEntries.forEach(entry => {
+                let role = (entry.agNumber || '').toUpperCase() === normalizedAg ? 'main' : 'partner';
+                const existingCategory = uniqueCategories.find(c => c.category === entry.category);
+
+                // Since a player can only be in one entry per category, we just need the category and the first entry ID.
+                if (!existingCategory) {
+                    uniqueCategories.push({
+                        category: entry.category,
+                        entryId: entry.id, // ID of the registration record
+                        role: role, // Role in this specific entry
+                        playerData: entry // The actual entry data
+                    });
+                }
+            });
+
+            return uniqueCategories;
+        }
+
+
+        // Render Player Profile Page
+        function renderPlayerProfile() {
+            if (!currentLoggedInPlayerId || !currentLoggedInPlayerRole) {
+                profileDetailsContainer.innerHTML = '<p class="text-center text-red-400">Error: Could not find your profile. Please try logging in again.</p>';
+                return;
+            }
+            // Find the specific registration entry
+            const entry = allPlayers.find(p => p.id === currentLoggedInPlayerId);
+            if (!entry) {
+                profileDetailsContainer.innerHTML = '<p class="text-center text-red-400">Error: Profile data not found. Please try logging in again.</p>';
+                return;
+            }
+
+            // Determine which player's details to show in the primary section ('Your Details')
+            let mainDisplayPlayer;
+            let partnerDisplayPlayer; // The other player in the entry, if doubles
+
+            if (entry.category === 'singles') {
+                mainDisplayPlayer = entry;
+                partnerDisplayPlayer = null;
+            } else {
+                if (currentLoggedInPlayerRole === 'main') {
+                    // Logged in as the main player (AG# in agNumber)
+                    mainDisplayPlayer = entry;
+                    partnerDisplayPlayer = {
+                        name: entry.partnerName,
+                        agNumber: entry.partnerAgNumber,
+                        department: entry.partnerDepartment,
+                        gender: entry.gender, // Assuming partner is same gender
+                        semester: entry.partnerSemester,
+                        phone: entry.partnerPhone,
+                    };
+                } else {
+                    // Logged in as the partner (AG# in partnerAgNumber)
+                    // Swap the display: Partner's data becomes 'Your Details', Main Player's data becomes 'Partner Details'
+                    mainDisplayPlayer = {
+                        name: entry.partnerName,
+                        agNumber: entry.partnerAgNumber,
+                        department: entry.partnerDepartment,
+                        gender: entry.gender, // Assuming player gender from entry's main player
+                        semester: entry.partnerSemester,
+                        phone: entry.partnerPhone,
+                    };
+                    partnerDisplayPlayer = {
+                        name: entry.name,
+                        agNumber: entry.agNumber,
+                        department: entry.department,
+                        gender: entry.gender,
+                        semester: entry.semester,
+                        phone: entry.phone,
+                    };
+                }
+            }
+
+            const feeStatus = entry.feeStatus || 'unpaid';
+
+            const partnerDetails = partnerDisplayPlayer ? `
+            <h3 class="text-xl font-semibold text-white border-b pb-1 mt-6">Partner Details (The other player in this entry)</h3>
+            <div class="grid grid-cols-2 gap-4 mt-2 text-slate-300">
+                <p><strong>Name:</strong> ${escapeHtml(partnerDisplayPlayer.name || 'N/A')}</p>
+                <p><strong>AG#:</strong> ${escapeHtml(partnerDisplayPlayer.agNumber || 'N/A')}</p>
+                <p><strong>Department:</strong> ${escapeHtml(partnerDisplayPlayer.department || 'N/A')}</p>
+                <p><strong>Semester:</strong> ${escapeHtml(partnerDisplayPlayer.semester || 'N/A')}</p>
+                <p><strong>Phone:</strong> ${escapeHtml(partnerDisplayPlayer.phone || 'N/A')}</p>
+            </div>
+        ` : '';
+
+            profileDetailsContainer.innerHTML = `
+            <h3 class="text-2xl font-bold text-center text-indigo-300 mb-6">Your Profile (${escapeHtml(entry.category).toUpperCase()} Entry)</h3>
+            
+            <h3 class="text-xl font-semibold text-white border-b pb-1">Your Details (The currently logged-in player)</h3>
+            <div class="grid grid-cols-2 gap-4 text-slate-300 mt-2">
+                <p><strong>Name:</strong> ${escapeHtml(mainDisplayPlayer.name || entry.name)}</p>
+                <p><strong>AG Number:</strong> <span class="text-indigo-400">${escapeHtml(mainDisplayPlayer.agNumber || entry.agNumber)}</span></p>
+                <p><strong>Department:</strong> ${escapeHtml(mainDisplayPlayer.department || entry.department)}</p>
+                <p><strong>Gender:</strong> ${escapeHtml(mainDisplayPlayer.gender || entry.gender)}</p>
+                <p><strong>Semester:</strong> ${escapeHtml(mainDisplayPlayer.semester || entry.semester)}</p>
+                <p><strong>Phone:</strong> ${escapeHtml(mainDisplayPlayer.phone || entry.phone)}</p>
+            </div>
+
+            <div class="mt-6 p-3 rounded-lg border ${feeStatus === 'paid' ? 'bg-green-900/50 border-green-700' : 'bg-red-900/50 border-red-700'}">
+                <p class="text-lg"><strong>Category:</strong> <span class="capitalize text-teal-400">${escapeHtml(entry.category)}</span></p>
+                <p class="text-lg"><strong>Fee Status:</strong> <span class="font-bold ${feeStatus === 'paid' ? 'text-green-400' : 'text-red-400'}">${feeStatus.toUpperCase()}</span></p>
+            </div>
+            ${partnerDetails}
+            ${feeStatus !== 'paid' ? `<div class="mt-6 p-4 bg-yellow-900/50 border border-yellow-700 rounded-lg text-yellow-300">
+                <p class="font-semibold">Fee Payment Instructions:</p>
+                <p>Please send your registration fee online to bank account: **0000000000**.</p>
+                <p>After payment, send a screenshot of the transaction along with your **AG Number** to the management for confirmation.</p>
+            </div>` : ''}
+        `;
+
+            // Setup the edit button to go to the form page and populate it
+            // Editing should always target the main entry data, regardless of who logged in
+            profileEditBtn.onclick = () => {
+                populatePlayerForm(entry, entry.id);
+                document.getElementById('form-agNumber').readOnly = true;
+                document.getElementById('player-form-title').textContent = 'Update Your Profile';
+                document.getElementById('player-form-submit-btn').textContent = 'Update Profile';
+                showPage('#player-form-page');
+            };
+        }
+
+        // REFACTORED: Filters players based on current search and filter state
+        function getFilteredPlayers() {
+            const searchTerm = (searchInput?.value || '').toLowerCase();
+
+            return allPlayers.filter(player => {
+
+                // 1. Apply Management Login Filter (managementFilter) - This is the primary gender filter
+                if (managementFilter === 'Male' && (player.gender || '').toUpperCase() !== 'MALE') return false;
+                if (managementFilter === 'Female' && (player.gender || '').toUpperCase() !== 'FEMALE') return false;
+
+                // 2. Apply Search Term Filter
+                const nameMatch = (player.name || '').toLowerCase().includes(searchTerm);
+                const agMatch = (player.agNumber || '').toLowerCase().includes(searchTerm);
+                const pNameMatch = (player.partnerName || '').toLowerCase().includes(searchTerm);
+                const pAgMatch = (player.partnerAgNumber || '').toLowerCase().includes(searchTerm);
+                if (searchTerm && !(nameMatch || agMatch || pNameMatch || pAgMatch)) return false;
+
+                // 3. Apply Dashboard Button Filter (currentFilter)
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'singles') return player.category === 'singles';
+                if (currentFilter === 'doubles') return player.category === 'doubles';
+
+                // Only apply the dashboard gender filter if no gender filter was applied via login (managementFilter is 'all')
+                if (managementFilter === 'all') {
+                    if (currentFilter === 'Male') return (player.gender || '').toUpperCase() === 'MALE';
+                    if (currentFilter === 'Female') return (player.gender || '').toUpperCase() === 'FEMALE';
+                }
+
+                // Fee filter logic
+                if (currentFilter === 'paid') return player.feeStatus === 'paid';
+                if (currentFilter === 'unpaid') return player.feeStatus === 'unpaid';
+
+                return true;
+            });
+        }
+
+        // Render table (Management table) based on search and filter
+        function renderTable() {
+            const filtered = getFilteredPlayers(); // Use the new function to get the filtered list
+
+            if (filtered.length === 0) {
+                // colspan changed to 11 to include the "No." column
+                playerTableBody.innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">No players found.</td></tr>`;
+                return;
+            }
+
+            // Generate table rows
+            playerTableBody.innerHTML = filtered.map((player, i) => {
+                const partnerCellContent = player.category === 'doubles' && player.partnerName
+                    ? `<button data-action="show-partner-info" data-id="${player.id}" class="text-indigo-600 hover:text-indigo-800 hover:underline font-medium">${escapeHtml(player.partnerName)}</button>`
+                    : 'N/A';
+
+                return `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">${i + 1}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${escapeHtml(player.name)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(player.agNumber)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(player.gender || '')}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(player.department)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(player.semester)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(player.phone || '')}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm capitalize">${escapeHtml(player.category)}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${partnerCellContent}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${player.feeStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${escapeHtml(player.feeStatus || '')}</span></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+              <button data-action="toggle-pay" data-id="${player.id}" class="${player.feeStatus === 'paid' ? 'text-yellow-600' : 'text-green-600'}">${player.feeStatus === 'paid' ? 'Unpay' : 'Pay'}</button>
+              <button data-action="edit" data-id="${player.id}" class="text-indigo-600">Edit</button>
+              <button data-action="delete" data-id="${player.id}" class="text-red-600">Delete</button>
+            </td>
+          </tr>
+        `;
+            }).join('');
+        }
+
+        // Reset the player registration form
+        function resetPlayerForm() {
+            currentEditingPlayerId = null;
+            playerForm.reset();
+            document.getElementById('form-agNumber').readOnly = false;
+            togglePartnerField('', '#form-partner-wrapper'); // clear partner required attributes
+            const partnerInputs = document.querySelectorAll('#form-partner-wrapper input, #form-partner-wrapper select');
+            partnerInputs.forEach(i => i.removeAttribute('required'));
+        }
+
+        // Populate the form fields with player data for editing
+        function populatePlayerForm(data, id) {
+            currentEditingPlayerId = id;
+            playerForm.elements.name.value = data.name || '';
+            playerForm.elements.agNumber.value = data.agNumber || '';
+            playerForm.elements.department.value = data.department || '';
+            playerForm.elements.gender.value = data.gender || '';
+            playerForm.elements.semester.value = data.semester || '';
+            playerForm.elements.category.value = data.category || '';
+            playerForm.elements.phone.value = data.phone || '';
+            playerForm.elements.partnerName.value = data.partnerName || '';
+            playerForm.elements.partnerAgNumber.value = data.partnerAgNumber || '';
+            playerForm.elements.partnerDepartment.value = data.partnerDepartment || '';
+            playerForm.elements.partnerSemester.value = data.partnerSemester || '';
+            playerForm.elements.partnerPhone.value = data.partnerPhone || '';
+
+            togglePartnerField(data.category, '#form-partner-wrapper');
+        }
+
+        // Toggle visibility and required status of partner fields
+        function togglePartnerField(category, selector) {
+            const wrapper = document.querySelector(selector);
+            const inputs = wrapper.querySelectorAll('input, select');
+
+            if (category === 'doubles') {
+                wrapper.style.display = 'grid';
+                inputs.forEach(i => {
+                    if (i.id !== 'form-partnerSemester') i.setAttribute('required', ''); // Partner Semester is optional
+                });
+            } else {
+                wrapper.style.display = 'none';
+                inputs.forEach(i => i.removeAttribute('required'));
+                // Clear partner fields when switching to singles
+                inputs.forEach(i => i.value = i.tagName === 'SELECT' ? '' : '');
+            }
+        }
+
+        // Display partner information in a modal (Management Dashboard action)
+        function showPartnerInfo(id) {
+            const player = allPlayers.find(p => p.id === id);
+            if (!player || player.category !== 'doubles') return;
+
+            const html = `
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Partner Details</h3>
+            <div class="space-y-2 text-gray-700">
+                <p><strong>Partner Name:</strong> ${escapeHtml(player.partnerName)}</p>
+                <p><strong>Partner AG#:</strong> ${escapeHtml(player.partnerAgNumber)}</p>
+                <p><strong>Department:</strong> ${escapeHtml(player.partnerDepartment || 'N/A')}</p>
+                <p><strong>Semester:</strong> ${escapeHtml(player.partnerSemester || 'N/A')}</p>
+                <p><strong>Phone:</strong> ${escapeHtml(player.partnerPhone || 'N/A')}</p>
+            </div>
+            <button data-action="close-modal" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">Close</button>
+        `;
+            showModal(html);
+        }
+
+        // NEW FUNCTION: Show registration success and fee info modal
+        function showRegistrationSuccessModal(data) {
+            const title = currentEditingPlayerId ? 'Profile Updated Successfully!' : 'Registration Successful!';
+            const feeInstructions = `
+            <div class="mt-4 p-4 bg-yellow-100 border border-yellow-400 rounded-lg text-yellow-800">
+                <p class="font-bold text-lg mb-2 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-8a1 1 0 102 0V7a1 1 0 10-2 0v3zm1 5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+                    ACTION REQUIRED: Submit Your Registration Fee
+                </p>
+                <p class="mb-2">Your registration for **${escapeHtml(data.category).toUpperCase()}** is now recorded. To confirm your spot, please submit your fee immediately.</p>
+                <p class="font-semibold">Fee Payment Details:</p>
+                <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                    <li>Send your registration fee online to bank account: <strong>0000000000</strong>.</li>
+                    <li>After payment, send a screenshot of the transaction along with your **AG Number (${escapeHtml(data.agNumber)})** to the management for confirmation.</li>
+                </ul>
+            </div>
+        `;
+
+            const html = `
+            <div class="text-gray-900">
+                <h3 class="text-3xl font-extrabold text-green-600 mb-2">${title}</h3>
+                <p class="text-xl text-gray-700 mb-4">Thank you for registering, ${escapeHtml(data.name)}!</p>
+                
+                ${currentEditingPlayerId ? '' : feeInstructions}
+
+                <div class="mt-6">
+                    <button data-action="close-modal-and-navigate" data-nav="#player-login-page" 
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-150">
+                        Proceed to Login
+                    </button>
+                </div>
+            </div>
+        `;
+            showModal(html);
+        }
+
+
+        // Handle form submission for new/updated player registration
+        function handlePlayerFormSubmit(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+
+            // Normalize data
+            data.agNumber = (data.agNumber || '').toUpperCase();
+            data.partnerAgNumber = (data.partnerAgNumber || '').toUpperCase();
+            data.name = (data.name || '').trim();
+            data.partnerName = (data.partnerName || '').trim();
+            data.phone = (data.phone || '').trim();
+            data.partnerPhone = (data.partnerPhone || '').trim();
+            data.feeStatus = data.feeStatus || 'unpaid';
+
+            // Validation
+            if (data.category === 'doubles' && data.agNumber === data.partnerAgNumber) {
+                showBanner('Error: Player and Partner AG# cannot be the same.', 'error');
+                return;
+            }
+
+            if (data.category === 'singles') {
+                data.partnerName = '';
+                data.partnerAgNumber = '';
+                data.partnerDepartment = '';
+                data.partnerSemester = '';
+                data.partnerPhone = '';
+            }
+
+            // ===== ✅ AG NUMBER DUPLICATION CHECK (FIXED POSITION) =====
+            if (!currentEditingPlayerId) {
+                const ag = data.agNumber;
+
+                let hasSingles = false;
+                let hasDoubles = false;
+
+                allPlayers.forEach(p => {
+                    const used =
+                        (p.agNumber || '').toUpperCase() === ag ||
+                        (p.partnerAgNumber || '').toUpperCase() === ag;
+
+                    if (!used) return;
+
+                    if (p.category === 'singles') hasSingles = true;
+                    if (p.category === 'doubles') hasDoubles = true;
+                });
+
+                if (data.category === 'singles' && hasSingles) {
+                    showBanner('Error: This AG number is already registered in Singles.', 'error');
+                    return;
+                }
+
+                if (data.category === 'doubles' && hasDoubles) {
+                    showBanner('Error: This AG number is already registered in Doubles.', 'error');
+                    return;
+                }
+            }
+            // ===== ✅ END FIX =====
+
+            const isNewRegistration = !currentEditingPlayerId;
+            const submissionData = { ...data };
+            const actionRef = currentEditingPlayerId
+                ? ref(db, `players/${currentEditingPlayerId}`)
+                : push(playersRef);
+
+            (currentEditingPlayerId
+                ? update(actionRef, submissionData)
+                : set(actionRef, submissionData))
+                .then(() => {
+                    showBanner(currentEditingPlayerId ? 'Profile updated successfully!' : 'Registration successful!');
+                    resetPlayerForm();
+
+                    if (isNewRegistration) {
+                        showRegistrationSuccessModal(data);
+                    } else if (document.querySelector('#management-dashboard-page').classList.contains('active')) {
+                        showPage('#management-dashboard-page');
+                    } else if (currentLoggedInPlayerId) {
+                        showPage('#player-profile-page');
+                    } else {
+                        showPage('#player-login-page');
+                    }
+                })
+                .catch(error => {
+                    console.error("Firebase error:", error);
+                    showBanner(`Error: ${error.message}`, 'error');
+                });
+        }
+
+
+        // Handle player login with AG#
+        function handlePlayerLogin(ag) {
+            const matchingEntries = findAllPlayerEntriesByAG(ag);
+
+            if (matchingEntries.length === 0) {
+                showBanner('Error: No profile found with that AG#.', 'error');
+                return;
+            }
+
+            if (matchingEntries.length === 1) {
+                // Direct profile page if only one entry (singles or doubles main/partner)
+                const entry = matchingEntries[0];
+                currentLoggedInPlayerId = entry.entryId;
+                currentLoggedInPlayerRole = entry.role;
+                showPage('#player-profile-page');
+            } else {
+                // Show selection if multiple entries (e.g., entered singles and is partner in a doubles entry)
+                const html = `
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Select Your Registration Entry</h3>
+                <p class="text-gray-600 mb-4">Your AG# is associated with multiple entries. Please select the one you wish to view/edit:</p>
+                <div class="space-y-3">
+                    ${matchingEntries.map(entry => `
+                        <button data-action="select-entry" data-entry-id="${entry.entryId}" data-role="${entry.role}" class="w-full text-left p-4 bg-indigo-100 hover:bg-indigo-200 rounded-lg text-gray-800">
+                            <strong>Category:</strong> <span class="capitalize">${entry.category}</span><br>
+                            <strong>Role:</strong> <span class="capitalize">${entry.role}</span>
+                            ${entry.role === 'main' && entry.category === 'doubles' ? `<br>Partner: ${escapeHtml(entry.playerData.partnerName)}` : ''}
+                            ${entry.role === 'partner' && entry.category === 'doubles' ? `<br>Registered by: ${escapeHtml(entry.playerData.name)}` : ''}
+                        </button>
+                    `).join('')}
+                </div>
+                <button data-action="close-modal" class="mt-6 w-full text-center text-sm text-gray-500 hover:text-indigo-600 hover:underline">Cancel</button>
+            `;
+                showModal(html);
+            }
+        }
+
+        // Handle management login (UPDATED LOGIC HERE)
+        function handleManagementLogin() {
+            const password = document.getElementById('management-password').value;
+
+            managementFilter = 'all'; // Reset before checking
+            let loginSuccess = false;
+
+            if (password === MANAGEMENT_PASSWORD) {
+                managementFilter = 'all';
+                showBanner('Login successful (All Players)!');
+                loginSuccess = true;
+            } else if (password === MANAGEMENT_PASSWORD_MALE) {
+                managementFilter = 'Male';
+                showBanner('Login successful (Male Players Only)!');
+                loginSuccess = true;
+            } else if (password === MANAGEMENT_PASSWORD_FEMALE) {
+                managementFilter = 'Female';
+                showBanner('Login successful (Female Players Only)!');
+                loginSuccess = true;
+            }
+            else {
+                showBanner('Error: Invalid management password.', 'error');
+                return;
+            }
+
+            if (loginSuccess) {
+                document.getElementById('management-password').value = ''; // Clear password field
+
+                // Set current dashboard filter to match the login filter and update button styles
+                currentFilter = managementFilter;
+
+                // Force button style update based on new filter
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-indigo-600', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                const activeFilterBtn = document.querySelector(`[data-filter="${currentFilter}"]`);
+
+                if (activeFilterBtn) {
+                    activeFilterBtn.classList.add('bg-indigo-600', 'text-white');
+                    activeFilterBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                } else {
+                    // Fallback to 'all' button style
+                    const allBtn = document.querySelector(`[data-filter="all"]`);
+                    if (allBtn) {
+                        allBtn.classList.add('bg-indigo-600', 'text-white');
+                        allBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    }
+                    currentFilter = 'all';
+                }
+
+                showPage('#management-dashboard-page');
+
+                // ⭐ FIX: Immediately render the table if data is already available
+                // This ensures the login filter is applied instantly without waiting for the async listener to fire again.
+                if (allPlayers.length > 0) {
+                    renderTable();
+                }
+            }
+        }
+
+        // Management Action Handler (Edit, Delete, Pay/Unpay)
+        function handleManagementAction(action, id) {
+            const player = allPlayers.find(p => p.id === id);
+            if (!player) {
+                showBanner('Error: Player not found.', 'error');
+                return;
+            }
+
+            if (action === 'edit') {
+                populatePlayerForm(player, id);
+                document.getElementById('form-agNumber').readOnly = true;
+                document.getElementById('player-form-title').textContent = 'Edit Player (Management)';
+                document.getElementById('player-form-submit-btn').textContent = 'Save Changes';
+                showPage('#player-form-page');
+            } else if (action === 'delete') {
+                if (confirm(`Are you sure you want to delete ${player.name}'s registration?`)) {
+                    remove(ref(db, `players/${id}`))
+                        .then(() => showBanner('Player deleted successfully.'))
+                        .catch(err => showBanner(`Delete failed: ${err.message}`, 'error'));
+                }
+            } else if (action === 'toggle-pay') {
+                const newStatus = player.feeStatus === 'paid' ? 'unpaid' : 'paid';
+                update(ref(db, `players/${id}`), { feeStatus: newStatus })
+                    .then(() => showBanner(`Fee status updated to: ${newStatus.toUpperCase()}`))
+                    .catch(err => showBanner(`Update failed: ${err.message}`, 'error'));
+            } else if (action === 'show-partner-info') {
+                showPartnerInfo(id);
+            }
+        }
+
+        // Export to CSV function
+        function exportToCsv() {
+            const playersToExport = getFilteredPlayers(); // Use the filtered list
+
+            if (playersToExport.length === 0) {
+                showBanner('No data to export based on current filters.', 'error');
+                return;
+            }
+
+            const headers = ["ID", "Name", "AG Number", "Gender", "Department", "Semester", "Phone", "Category", "Partner Name", "Partner AG Number", "Partner Department", "Partner Semester", "Partner Phone", "Fee Status"];
+            const csvRows = [
+                headers.join(','),
+                ...playersToExport.map(p => [
+                    p.id,
+                    `"${(p.name || '').replace(/"/g, '""')}"`,
+                    p.agNumber,
+                    p.gender,
+                    p.department,
+                    p.semester,
+                    p.phone,
+                    p.category,
+                    `"${(p.partnerName || '').replace(/"/g, '""')}"`,
+                    p.partnerAgNumber,
+                    p.partnerDepartment,
+                    p.partnerSemester,
+                    p.partnerPhone,
+                    p.feeStatus || 'unpaid'
+                ].join(','))
+            ];
+
+            const csvContent = "data:text/csv;charset=utf-8," + csvRows.join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "badminton_players_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showBanner('Data exported to CSV.');
+        }
+
+        // Import from CSV function (simplified, assumes correct format)
+        function importFromCsv(file) {
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                const lines = text.split('\n').filter(line => line.trim() !== '');
+
+                if (lines.length <= 1) {
+                    showBanner('CSV file is empty or only contains headers.', 'error');
+                    return;
+                }
+
+                const keys = ["ID", "Name", "AG Number", "Gender", "Department", "Semester", "Phone", "Category", "Partner Name", "Partner AG Number", "Partner Department", "Partner Semester", "Partner Phone", "Fee Status"];
+                // Skipping the first line (headers)
+                const playersToImport = lines.slice(1).map(line => {
+                    // Simple split, might break with commas in names/departments. Use a proper CSV parser for robust apps.
+                    const values = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(v => v.replace(/"/g, '').trim());
+
+                    const player = {
+                        name: values[1],
+                        agNumber: values[2],
+                        gender: values[3],
+                        department: values[4],
+                        semester: values[5],
+                        phone: values[6],
+                        category: values[7],
+                        partnerName: values[8],
+                        partnerAgNumber: values[9],
+                        partnerDepartment: values[10],
+                        partnerSemester: values[11],
+                        partnerPhone: values[12],
+                        feeStatus: values[13] || 'unpaid'
+                    };
+                    return player;
+                });
+
+                // Use a batch update for all imported players
+                const updates = {};
+                playersToImport.forEach(player => {
+                    // Push a new record for each imported player
+                    const newPlayerKey = push(playersRef).key;
+                    updates[newPlayerKey] = player;
+                });
+
+                update(playersRef, updates)
+                    .then(() => showBanner(`${playersToImport.length} players imported successfully!`))
+                    .catch(error => showBanner(`Error importing players: ${error.message}`, 'error'));
+            };
+            reader.readAsText(file);
+        }
+
+        // Event listener for global navigation, modal close, and category toggle
+        document.addEventListener('click', (e) => {
+            // Navigation handler
+            const navBtn = e.target.closest('[data-nav]');
+            if (navBtn) {
+                showPage(navBtn.dataset.nav);
+            }
+
+            // Modal close handler
+            if (e.target.closest('[data-action="close-modal"]')) {
+                hideModal();
+            }
+
+            // Close modal and navigate
+            const navAndCloseBtn = e.target.closest('[data-action="close-modal-and-navigate"]');
+            if (navAndCloseBtn) {
+                hideModal();
+                showPage(navAndCloseBtn.dataset.nav);
+            }
+
+            // Category toggle handler
+            const categorySelect = e.target.closest('[data-action="toggle-partner"]');
+            if (categorySelect) {
+                const category = categorySelect.value;
+                const targetSelector = categorySelect.dataset.target;
+                togglePartnerField(category, targetSelector);
+            }
+
+            // Management action handler (Edit, Delete, Pay/Unpay)
+            const actionBtn = e.target.closest('[data-action="toggle-pay"], [data-action="edit"], [data-action="delete"], [data-action="show-partner-info"]');
+            if (actionBtn) {
+                const action = actionBtn.dataset.action;
+                const id = actionBtn.dataset.id;
+                handleManagementAction(action, id);
+            }
+
+            // Entry selection from multi-entry modal
+            const selectEntryBtn = e.target.closest('[data-action="select-entry"]');
+            if (selectEntryBtn) {
+                currentLoggedInPlayerId = selectEntryBtn.dataset.entryId;
+                currentLoggedInPlayerRole = selectEntryBtn.dataset.role;
+                hideModal();
+                showPage('#player-profile-page');
+            }
+        });
+
+        // Player returning login button
+        const playerReturningBtn = document.getElementById('player-returning-btn');
+        const agLoginInput = document.getElementById('ag-login');
+        if (playerReturningBtn && agLoginInput) {
+            playerReturningBtn.addEventListener('click', () => {
+                handlePlayerLogin(agLoginInput.value);
+            });
+        }
+
+        // Player new registration button
+        const playerNewBtn = document.getElementById('player-new-btn');
+        if (playerNewBtn) {
+            playerNewBtn.addEventListener('click', () => {
+                resetPlayerForm();
+                document.getElementById('form-agNumber').readOnly = false;
+                document.getElementById('player-form-title').textContent = 'Player Registration';
+                document.getElementById('player-form-submit-btn').textContent = 'Submit Registration';
+                showPage('#player-form-page');
+            });
+        }
+
+        // Management login button
+        const managementLoginBtn = document.getElementById('management-login-btn');
+        if (managementLoginBtn) {
+            managementLoginBtn.addEventListener('click', handleManagementLogin);
+        }
+
+        // Add Player button in Management Dashboard
+        const addPlayerBtn = document.getElementById('add-player-btn');
+        if (addPlayerBtn) {
+            addPlayerBtn.addEventListener('click', () => {
+                resetPlayerForm();
+                document.getElementById('form-agNumber').readOnly = false;
+                document.getElementById('player-form-title').textContent = 'Add New Player (Management)';
+                document.getElementById('player-form-submit-btn').textContent = 'Submit Registration';
+                showPage('#player-form-page');
+            });
+        }
+
+        // Filter button handler
+        if (filterButtons) {
+            filterButtons.addEventListener('click', handleFilterClick);
+        }
+
+        function handleFilterClick(e) {
+            const btn = e.target.closest('.filter-btn');
+            if (!btn) return;
+            currentFilter = btn.dataset.filter;
+
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white');
+                b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            btn.classList.add('bg-indigo-600', 'text-white');
+            btn.classList.remove('bg-gray-200', 'text-gray-700');
+
+            renderTable(); // Re-render table with new filter
+        }
+
+        // Event wiring - run on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('#start-page');
+            loadAndListen(); // Load firebase data early
+            // ensure initial partner toggle state for page form
+            const initialCategory = playerForm.elements.category.value;
+            if (initialCategory) togglePartnerField(initialCategory, '#form-partner-wrapper');
+        });
+
+        // Form submit listeners
+        playerForm.addEventListener('submit', handlePlayerFormSubmit);
+        document.addEventListener('submit', (e) => {
+            if (e.target.id === 'modal-player-form') handleSavePlayer(e);
+        });
+
+        // Search input listener
+        if (searchInput) searchInput.addEventListener('input', renderTable);
+
+        // Import file handler
+        const importFile = document.getElementById('import-file');
+        if (importFile) {
+            importFile.addEventListener('change', (e) => {
+                importFromCsv(e.target.files[0]);
+                e.target.value = ''; // Clear file input
+            });
+        }
+
+        // Import/Export button listeners
+        const importCsvBtn = document.getElementById('import-csv-btn');
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        if (importCsvBtn) {
+            importCsvBtn.addEventListener('click', () => importFile.click());
+        }
+        if (exportCsvBtn) {
+            exportCsvBtn.addEventListener('click', exportToCsv);
+        }
+
+    </script>
+</body>
+
+</html>
